@@ -1,0 +1,7 @@
+{
+    "name": "CPP Crow Dev",
+    "dockerComposeFile": "../docker-compose.yml",
+    "service": "cppbox-crow-app",
+    "workspaceFolder": "/usr/src/app",
+    "remoteUser": "root"
+}

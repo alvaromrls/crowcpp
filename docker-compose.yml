@@ -1,0 +1,9 @@
+version: "3.8"
+services:
+  cppbox-crow-app:
+    build: .
+    volumes:
+      - .:/usr/src/app
+    ports:
+      - "8080:8080"
+    tty: true
