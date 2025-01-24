@@ -15,11 +15,13 @@ include_directories(include)
 # Configurar el directorio de salida para los binarios
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
+# Encuentra OpenSSL para asegurar que OpenSSL::Crypto esté disponible
+find_package(OpenSSL REQUIRED)
 # --------------------------------
 # Aplicación principal
 # --------------------------------
 # Archivos fuente principales
-add_executable(cppweb src/main.cpp src/server.cpp)
+add_executable(cppweb src/main.cpp src/server.cpp src/hash256.cpp)
 
 # Linkear librerías necesarias
 target_link_libraries(cppweb ssl crypto pthread)
@@ -35,12 +37,15 @@ find_package(GTest REQUIRED)
 
 # Añadir ejecutable para los tests
 add_executable(unit_tests tests/main_test.cpp src/server.cpp)
+add_executable(hash256_tests tests/hash256_tests.cpp src/hash256.cpp)
 
 # Vincular Google Test y pthread al ejecutable de tests
 target_link_libraries(unit_tests PRIVATE gtest gtest_main pthread curl)
+target_link_libraries(hash256_tests PRIVATE gtest gtest_main ssl  crypto pthread)
 
 # Registrar los tests para que puedan ejecutarse con `ctest`
 add_test(NAME RunTests COMMAND unit_tests)
+add_test(NAME HASH_256_TESTS COMMAND hash256_tests)
 
 # Opcional: Mostrar mensajes adicionales para facilitar la depuración
 message(STATUS "C++ Standard: ${CMAKE_CXX_STANDARD}")
