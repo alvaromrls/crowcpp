@@ -59,4 +59,41 @@ void setup_routes(crow::SimpleApp &app)
                 return crow::response(500, result);
             }
         });
+
+    CROW_ROUTE(app, "/hash256/verify")
+        .methods(crow::HTTPMethod::POST)(
+            [](const crow::request &req)
+            {
+                crow::json::wvalue result;
+
+                try
+                {
+                    // Obtener parámetros del cuerpo de la solicitud
+                    auto params = req.get_body_params();
+
+                    // // Validar que los parámetros necesarios están presentes
+                    // if (!params.get("hash") || !params.get("text"))
+                    // {
+                    //     result["error"] = "Missing required parameters: 'hash' and/or 'text'";
+                    //     return crow::response(400, result); // 400 Bad Request
+                    // }
+
+                    std::string hash{params.get("hash")};
+                    std::string text{params.get("text")};
+
+                    // Verificar el hash con la clase Hash256
+                    Hash256 hash256;
+                    result["valid"] = hash256.verifyHexHash(text, hash);
+                    result["hash"] = hash;
+                    result["text"] = text;
+
+                    return crow::response(200, result); // 200 OK
+                }
+                catch (const std::exception &e)
+                {
+                    // Manejo de excepciones generales
+                    result["error"] = "Internal Server Error: " + std::string(e.what());
+                    return crow::response(500, result); // 500 Internal Server Error
+                }
+            });
 }
