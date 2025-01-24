@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include "crow.h"
+#include "server.h"
 #include <thread>
 #include <future>
 #include <chrono>
@@ -25,30 +26,45 @@ std::string http_request(const std::string &url)
     return response;
 }
 
-TEST(CrowServerTests, RootRoute)
+// Fixture para los tests del servidor Crow
+class CrowServerTests : public ::testing::Test
 {
+protected:
     crow::SimpleApp app;
-
-    // Configurar rutas
-    app.route_dynamic("/")([]()
-                           { return "Hello, Test!"; });
-
-    // Ejecutar el servidor en un hilo separado
+    std::thread server_thread;
     std::promise<void> server_ready;
-    std::thread server_thread([&]()
-                              {
-        server_ready.set_value();
-        app.port(18080).run(); });
 
-    // Esperar a que el servidor inicie
-    server_ready.get_future().wait();
-    std::this_thread::sleep_for(std::chrono::seconds(1));
+    void SetUp() override
+    {
+        // Configurar rutas
+        setup_routes(app);
 
-    // Hacer la solicitud HTTP
-    std::string response = http_request("http://localhost:18080/");
-    EXPECT_EQ(response, "Hello, Test!");
+        // Iniciar el servidor en un hilo separado
+        server_thread = std::thread([&]()
+                                    {
+            server_ready.set_value();
+            app.port(18080).run(); });
 
-    // Detener el servidor
-    app.stop();
-    server_thread.join();
+        // Esperar a que el servidor inicie
+        server_ready.get_future().wait();
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+    }
+
+    void TearDown() override
+    {
+        // Detener el servidor
+        app.stop();
+        if (server_thread.joinable())
+        {
+            server_thread.join();
+        }
+    }
+};
+
+// Test específico usando la fixture
+TEST_F(CrowServerTests, Hash256Route)
+{
+    // Hacer la solicitud HTTP y verificar la respuesta
+    std::string response = http_request("http://localhost:18080/hash256/holamigos");
+    EXPECT_EQ(response, "{\"hash\":\"52213887221291bda14f3fe1ba591ebf8920c360d5233c9e64ff91812f65de0d\"}");
 }

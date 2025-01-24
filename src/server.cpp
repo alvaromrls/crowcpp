@@ -21,7 +21,9 @@ void setup_routes(crow::SimpleApp &app)
             try
             {
                 std::string hash = calculate_hash256(text);
-                return crow::response(200, hash);
+                crow::json::wvalue result;
+                result["hash"] = hash;
+                return crow::response(200, result);
             }
             catch (const std::exception &e)
             {
