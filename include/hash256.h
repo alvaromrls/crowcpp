@@ -3,14 +3,14 @@
 #include "openssl/sha.h"
 #include <openssl/evp.h>
 
+#include <memory>
 #include <string>
 
 class Hash256
 {
 private:
     std::string _hash;
-    unsigned char _hashBuffer[EVP_MAX_MD_SIZE];
-    EVP_MD_CTX *mdctx;
+    std::unique_ptr<EVP_MD_CTX, void (*)(EVP_MD_CTX *)> mdctx;
 
     // Método para obtener el hash en formato hexadecimal
     std::string toHex(const std::string &hash);
@@ -21,6 +21,9 @@ private:
 public:
     Hash256();
     ~Hash256();
+
+    Hash256(const Hash256 &) = delete;            // No copiable
+    Hash256 &operator=(const Hash256 &) = delete; // No asignable
 
     // Método para calcular el hash SHA-256 de un texto (formato HEX)
     std::string calculateHex(const std::string &input);
