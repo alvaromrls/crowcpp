@@ -1,12 +1,11 @@
+// src/main.cpp
 #include "crow.h"
+#include "server.h"
 
 int main()
 {
     crow::SimpleApp app;
-
-    CROW_ROUTE(app, "/")
-    ([]()
-     { return "Hello, Crow!"; });
-
-    app.port(8080).multithreaded().run();
+    setup_routes(app);
+    app.port(8080).run();
+    return 0;
 }

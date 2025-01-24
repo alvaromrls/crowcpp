@@ -10,6 +10,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # Incluir directorios de Crow y otras dependencias
 include_directories(/usr/local/src/crow/include)
+include_directories(include)
 
 # Configurar el directorio de salida para los binarios
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
@@ -18,7 +19,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 # Aplicación principal
 # --------------------------------
 # Archivos fuente principales
-add_executable(cppweb src/main.cpp)
+add_executable(cppweb src/main.cpp src/server.cpp)
 
 # Linkear librerías necesarias
 target_link_libraries(cppweb ssl crypto pthread)
@@ -33,10 +34,10 @@ enable_testing()
 find_package(GTest REQUIRED)
 
 # Añadir ejecutable para los tests
-add_executable(unit_tests tests/main_test.cpp)
+add_executable(unit_tests tests/main_test.cpp src/server.cpp)
 
 # Vincular Google Test y pthread al ejecutable de tests
-target_link_libraries(unit_tests PRIVATE GTest::GTest GTest::Main pthread)
+target_link_libraries(unit_tests PRIVATE gtest gtest_main pthread curl)
 
 # Registrar los tests para que puedan ejecutarse con `ctest`
 add_test(NAME RunTests COMMAND unit_tests)

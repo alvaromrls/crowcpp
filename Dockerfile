@@ -1,7 +1,7 @@
 FROM ubuntu:22.04
 
 # Instalar herramientas necesarias
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -qq \
     build-essential \
     cmake \
     git \
