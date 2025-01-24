@@ -36,12 +36,12 @@ enable_testing()
 find_package(GTest REQUIRED)
 
 # Añadir ejecutable para los tests
-add_executable(unit_tests tests/main_test.cpp src/server.cpp)
+add_executable(unit_tests tests/main_test.cpp src/server.cpp src/hash256.cpp)
 add_executable(hash256_tests tests/hash256_tests.cpp src/hash256.cpp)
 
 # Vincular Google Test y pthread al ejecutable de tests
-target_link_libraries(unit_tests PRIVATE gtest gtest_main pthread curl)
-target_link_libraries(hash256_tests PRIVATE gtest gtest_main ssl  crypto pthread)
+target_link_libraries(unit_tests PRIVATE gtest gtest_main pthread curl ssl crypto )
+target_link_libraries(hash256_tests PRIVATE gtest gtest_main ssl crypto pthread)
 
 # Registrar los tests para que puedan ejecutarse con `ctest`
 add_test(NAME RunTests COMMAND unit_tests)
