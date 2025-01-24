@@ -66,5 +66,18 @@ TEST_F(CrowServerTests, Hash256Route)
 {
     // Hacer la solicitud HTTP y verificar la respuesta
     std::string response = http_request("http://localhost:18080/hash256/holamigos");
-    EXPECT_EQ(response, "{\"hash\":\"52213887221291bda14f3fe1ba591ebf8920c360d5233c9e64ff91812f65de0d\"}");
+    // Parsear la respuesta JSON usando el soporte de Crow
+    crow::json::rvalue json_response;
+    try
+    {
+        json_response = crow::json::load(response); // Cargar el JSON desde la respuesta
+
+        // Verificar que la respuesta contiene el campo "hash" con el valor esperado
+        std::string expected_hash = "52213887221291bda14f3fe1ba591ebf8920c360d5233c9e64ff91812f65de0d";
+        ASSERT_EQ(json_response["hash"].s(), expected_hash); // .s() devuelve un string
+    }
+    catch (const std::exception &e)
+    {
+        FAIL() << "Error parsing JSON: " << e.what();
+    }
 }

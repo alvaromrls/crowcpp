@@ -17,6 +17,9 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 # Encuentra OpenSSL para asegurar que OpenSSL::Crypto esté disponible
 find_package(OpenSSL REQUIRED)
+
+# Encuentra cURL
+find_package(CURL REQUIRED)
 # --------------------------------
 # Aplicación principal
 # --------------------------------
