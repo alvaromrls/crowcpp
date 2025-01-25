@@ -1,25 +1,10 @@
 #include "hash256.h"
-
+#include "HexUtils.h"
 #include <sstream>
 #include <iomanip>
 #include <algorithm>
 
 constexpr int EQ_STRINGS = 0;
-
-std::string Hash256::toHex(const std::string &hash)
-{
-    std::stringstream ss;
-
-    auto toHex = [&ss](unsigned char c)
-    {
-        ss << std::setw(2) << std::setfill('0') << std::hex << (int)c;
-    };
-
-    // Aplica la lambda a cada carácter de la cadena
-    std::for_each(hash.begin(), hash.end(), toHex);
-
-    return ss.str();
-}
 
 Hash256::Hash256()
     : mdctx(nullptr, EVP_MD_CTX_free) // Inicialización con nullptr y el deleter
@@ -61,7 +46,7 @@ std::string Hash256::_calculateHash(const std::string &input)
 
 std::string Hash256::calculateHex(const std::string &input)
 {
-    return toHex(_calculateHash(input));
+    return HexUtils::toHex(_calculateHash(input));
 }
 
 bool Hash256::verifyHexHash(const std::string &input, const std::string &hash)
