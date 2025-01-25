@@ -20,7 +20,7 @@ Hash256::~Hash256()
 {
 }
 
-std::string Hash256::_calculateHash(const std::string &input)
+std::string Hash256::calculateHash(const std::string &input)
 {
 
     if (1 != EVP_DigestInit_ex(mdctx.get(), EVP_sha256(), nullptr))
@@ -46,7 +46,7 @@ std::string Hash256::_calculateHash(const std::string &input)
 
 std::string Hash256::calculateHex(const std::string &input)
 {
-    return HexUtils::toHex(_calculateHash(input));
+    return HexUtils::toHex(calculateHash(input));
 }
 
 bool Hash256::verifyHexHash(const std::string &input, const std::string &hash)
