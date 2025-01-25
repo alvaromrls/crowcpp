@@ -8,7 +8,8 @@ RUN apt-get update && apt-get install -qq \
     libssl-dev \
     libboost-all-dev \
     libasio-dev \
-    libcurl4-openssl-dev
+    libcurl4-openssl-dev \
+    libgmock-dev
 
 # Clonar Crow en el contenedor
 RUN git clone https://github.com/CrowCpp/Crow.git /usr/local/src/crow

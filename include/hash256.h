@@ -3,21 +3,19 @@
 #include "openssl/sha.h"
 #include <openssl/evp.h>
 #include "IHashCalculator.h"
-
+#include "IHashAdapter.h"
 #include <memory>
 
 class Hash256 : IHashCalculator
 {
 private:
-    std::string _hash;
-    std::unique_ptr<EVP_MD_CTX, void (*)(EVP_MD_CTX *)> mdctx;
-
+    std::shared_ptr<IHashAdapter> hashAdapter;
     // Método interno para calcular el hast de una cadena
     std::string calculateHash(const std::string &input);
 
 public:
-    Hash256();
-    ~Hash256();
+    explicit Hash256(std::shared_ptr<IHashAdapter> adapter);
+    ~Hash256() = default;
 
     Hash256(const Hash256 &) = delete;            // No copiable
     Hash256 &operator=(const Hash256 &) = delete; // No asignable

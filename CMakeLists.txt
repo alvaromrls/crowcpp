@@ -24,7 +24,7 @@ find_package(CURL REQUIRED)
 # Aplicación principal
 # --------------------------------
 # Archivos fuente principales
-add_executable(cppweb src/main.cpp src/server.cpp src/hash256.cpp src/HexUtils.cpp)
+add_executable(cppweb src/main.cpp src/server.cpp src/hash256.cpp src/HexUtils.cpp src/OpenSSLAdapter.cpp)
 
 # Linkear librerías necesarias
 target_link_libraries(cppweb ssl crypto pthread)
@@ -39,12 +39,12 @@ enable_testing()
 find_package(GTest REQUIRED)
 
 # Añadir ejecutable para los tests
-add_executable(unit_tests tests/main_test.cpp src/server.cpp src/hash256.cpp src/HexUtils.cpp)
-add_executable(hash256_tests tests/hash256_tests.cpp src/hash256.cpp src/HexUtils.cpp)
+add_executable(unit_tests tests/main_test.cpp src/server.cpp src/hash256.cpp src/HexUtils.cpp src/OpenSSLAdapter.cpp)
+add_executable(hash256_tests tests/hash256_tests.cpp src/hash256.cpp src/HexUtils.cpp src/OpenSSLAdapter.cpp)
 
 # Vincular Google Test y pthread al ejecutable de tests
 target_link_libraries(unit_tests PRIVATE gtest gtest_main pthread curl ssl crypto )
-target_link_libraries(hash256_tests PRIVATE gtest gtest_main ssl crypto pthread)
+target_link_libraries(hash256_tests PRIVATE gtest gtest_main gmock  gmock_main  ssl crypto pthread)
 
 # Registrar los tests para que puedan ejecutarse con `ctest`
 add_test(NAME RunTests COMMAND unit_tests)

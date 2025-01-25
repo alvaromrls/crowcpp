@@ -2,10 +2,15 @@
 #include "server.h"
 #include "hash256.h"
 #include <sstream>
+#include "OpenSSLAdapter.h"
 
 std::string calculate_hash256(const std::string &text)
 {
-    Hash256 hasher;
+    // Crear una instancia de OpenSSLAdapter
+    auto opensslAdapter = std::make_shared<OpenSSLAdapter>();
+
+    // Pasar el adaptador a Hash256
+    Hash256 hasher(opensslAdapter);
     return hasher.calculateHex(text);
 }
 
@@ -82,7 +87,12 @@ void setup_routes(crow::SimpleApp &app)
                     std::string text{params.get("text")};
 
                     // Verificar el hash con la clase Hash256
-                    Hash256 hash256;
+                    // Crear una instancia de OpenSSLAdapter
+                    auto opensslAdapter = std::make_shared<OpenSSLAdapter>();
+
+                    // Pasar el adaptador a Hash256
+                    Hash256 hash256(opensslAdapter);
+
                     result["valid"] = hash256.verifyHexHash(text, hash);
                     result["hash"] = hash;
                     result["text"] = text;
