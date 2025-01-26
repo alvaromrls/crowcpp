@@ -9,7 +9,9 @@ RUN apt-get update && apt-get install -qq \
     libboost-all-dev \
     libasio-dev \
     libcurl4-openssl-dev \
-    libgmock-dev
+    libgmock-dev \
+    g++ \
+    lcov 
 
 # Clonar Crow en el contenedor
 RUN git clone https://github.com/CrowCpp/Crow.git /usr/local/src/crow
@@ -26,6 +28,10 @@ RUN cd /usr/src/googletest && \
     cp -r googletest/include/gtest /usr/include && \
     cp lib/*.a /usr/lib
 
+#ENV VARS
+ENV CXXFLAGS="-g -O0 --coverage"
+ENV LDFLAGS="--coverage"
+
 # Crear directorio de trabajo
 WORKDIR /usr/src/app
 
@@ -34,3 +40,7 @@ RUN mkdir -p build
 
 # Comando predeterminado
 CMD ["/bin/bash"]
+
+# Generar cobertura
+# lcov --capture --directory . --output-file coverage.info
+# genhtml coverage.info --output-directory coverage-report
